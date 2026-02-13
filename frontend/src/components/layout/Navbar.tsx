@@ -22,7 +22,7 @@ export default function Navbar() {
                         variant="gradient"
                         gradient={{ from: 'teal', to: 'cyan', deg: 90 }}
                     >
-                        🌴 CeylonBooking
+                        CeylonBooking
                     </Text>
                 </Link>
 

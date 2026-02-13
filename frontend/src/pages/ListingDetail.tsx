@@ -51,7 +51,7 @@ export default function ListingDetail() {
         if (!listing || !bookingDate) return;
         const response = await bookingsApi.checkAvailability({
             listingId: listing.id,
-            bookingDate: bookingDate.toISOString().split('T')[0],
+            bookingDate: new Date(bookingDate).toISOString().split('T')[0],
             quantity,
         });
         if (response.success) {
@@ -74,30 +74,39 @@ export default function ListingDetail() {
         if (!listing || !bookingDate || !token) return;
 
         setBookingLoading(true);
-        const response = await bookingsApi.create(
-            {
-                listingId: listing.id,
-                bookingDate: bookingDate.toISOString().split('T')[0],
-                quantity,
-            },
-            token
-        );
+        try {
+            const response = await bookingsApi.create(
+                {
+                    listingId: listing.id,
+                    bookingDate: new Date(bookingDate).toISOString().split('T')[0],
+                    quantity,
+                },
+                token
+            );
 
-        if (response.success) {
+            if (response.success) {
+                notifications.show({
+                    title: 'Booking Confirmed!',
+                    message: 'Your booking has been successfully created.',
+                    color: 'teal',
+                });
+                navigate('/my-bookings');
+            } else {
+                notifications.show({
+                    title: 'Booking Failed',
+                    message: response.error || 'Something went wrong',
+                    color: 'red',
+                });
+            }
+        } catch (error) {
             notifications.show({
-                title: 'Booking Confirmed!',
-                message: 'Your booking has been successfully created.',
-                color: 'teal',
-            });
-            navigate('/my-bookings');
-        } else {
-            notifications.show({
-                title: 'Booking Failed',
-                message: response.error || 'Something went wrong',
+                title: 'Error',
+                message: 'An unexpected error occurred while processing your booking',
                 color: 'red',
             });
+        } finally {
+            setBookingLoading(false);
         }
-        setBookingLoading(false);
     };
 
     if (loading) {
@@ -193,7 +202,7 @@ export default function ListingDetail() {
                                 label="Select Date"
                                 placeholder="Pick a date"
                                 value={bookingDate}
-                                onChange={setBookingDate}
+                                onChange={(val: any) => setBookingDate(val)}
                                 minDate={new Date()}
                                 leftSection={<IconCalendar size={16} />}
                             />
@@ -232,7 +241,7 @@ export default function ListingDetail() {
                                 size="lg"
                                 onClick={handleBooking}
                                 loading={bookingLoading}
-                                disabled={!bookingDate || (availability && !availability.available)}
+                                disabled={!bookingDate || (availability ? !availability.available : false)}
                             >
                                 {isAuthenticated ? 'Book Now' : 'Login to Book'}
                             </Button>

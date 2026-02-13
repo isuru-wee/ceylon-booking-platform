@@ -113,8 +113,8 @@ export default function Signup() {
                             placeholder="Select account type"
                             required
                             data={[
-                                { value: 'tourist', label: '🧳 Tourist - I want to book experiences' },
-                                { value: 'host', label: '🏠 Host - I want to list my services' },
+                                { value: 'tourist', label: 'Tourist - I want to book experiences' },
+                                { value: 'host', label: 'Host - I want to list my services' },
                             ]}
                             {...form.getInputProps('userType')}
                         />

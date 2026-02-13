@@ -25,11 +25,20 @@ export const authMiddleware = async (c: Context, next: Next) => {
     const supabase = getSupabaseClient();
 
     // Verify token using Supabase Auth
+    console.log('Auth check token:', token.substring(0, 10) + '...');
     const { data: { user }, error } = await supabase.auth.getUser(token);
 
-    if (error || !user) {
-        return c.json({ error: 'Invalid or expired token' }, 401);
+    if (error) {
+        console.error('Auth verify error:', error);
+        return c.json({ error: 'Unauthorized: ' + error.message }, 401);
     }
+
+    if (!user) {
+        console.warn('Auth verify: User not found for token');
+        return c.json({ error: 'Unauthorized: User not found' }, 401);
+    }
+
+    console.log('Auth success for user:', user.id);
 
     // Attach user to context
     c.set('user', {

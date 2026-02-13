@@ -95,6 +95,21 @@ export const listingsApi = {
     },
 };
 
+// Helper to map snake_case Booking to camelCase
+const mapBooking = (item: any): Booking => ({
+    id: item.id,
+    listingId: item.listing_id || item.listingId,
+    touristId: item.tourist_id || item.touristId,
+    bookingDate: item.booking_date || item.bookingDate,
+    timeSlot: item.time_slot || item.timeSlot,
+    quantity: item.quantity,
+    totalPrice: item.total_price ?? item.totalPrice ?? 0,
+    currency: item.currency,
+    status: item.status,
+    createdAt: item.created_at || item.createdAt,
+    listing: item.listing ? mapListing(item.listing) : undefined,
+});
+
 // Bookings API
 export const bookingsApi = {
     checkAvailability: async (data: {
@@ -132,20 +147,44 @@ export const bookingsApi = {
         const res = await fetch(`${API_BASE}/bookings/${id}`, {
             headers: getHeaders(token),
         });
-        return res.json();
+        const json = await res.json();
+
+        if (json.success && json.data) {
+            return {
+                success: true,
+                data: mapBooking(json.data),
+            };
+        }
+        return json;
     },
 
     getByTourist: async (touristId: string, token: string): Promise<ApiResponse<Booking[]>> => {
         const res = await fetch(`${API_BASE}/tourists/${touristId}/bookings`, {
             headers: getHeaders(token),
         });
-        return res.json();
+        const json = await res.json();
+
+        if (json.success && json.data) {
+            return {
+                success: true,
+                data: json.data.map(mapBooking),
+            };
+        }
+        return json;
     },
 
     getByListing: async (listingId: string, token: string): Promise<ApiResponse<Booking[]>> => {
         const res = await fetch(`${API_BASE}/listings/${listingId}/bookings`, {
             headers: getHeaders(token),
         });
-        return res.json();
+        const json = await res.json();
+
+        if (json.success && json.data) {
+            return {
+                success: true,
+                data: json.data.map(mapBooking),
+            };
+        }
+        return json;
     },
 };

@@ -113,8 +113,8 @@ export default function CreateListing() {
                             placeholder="Select listing type"
                             required
                             data={[
-                                { value: 'slot', label: '🎯 Experience / Tour (time-based)' },
-                                { value: 'date', label: '🏨 Accommodation (date-based)' },
+                                { value: 'slot', label: 'Experience / Tour (time-based)' },
+                                { value: 'date', label: 'Accommodation (date-based)' },
                             ]}
                             {...form.getInputProps('inventoryType')}
                         />

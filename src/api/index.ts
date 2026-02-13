@@ -288,15 +288,17 @@ app.get('/api/listings/:listingId/bookings', authMiddleware, async (c) => {
     return c.json({ success: true, data });
 });
 
-// Start the server
+// Start the server (skip when running under vitest — tests use app.fetch() directly)
 import { serve } from '@hono/node-server';
 
-const port = parseInt(process.env.PORT || '3000');
-console.log(`🚀 CeylonBooking API starting on port ${port}...`);
+if (!process.env.VITEST) {
+    const port = parseInt(process.env.PORT || '3000');
+    console.log(`🚀 CeylonBooking API starting on port ${port}...`);
 
-serve({
-    fetch: app.fetch,
-    port
-});
+    serve({
+        fetch: app.fetch,
+        port
+    });
+}
 
 export { app };

@@ -33,7 +33,7 @@ export default function Dashboard() {
             const response = await listingsApi.getAll();
             if (response.success && response.data) {
                 // Filter to only show this host's listings
-                const myListings = response.data.filter((l: any) => l.host_id === user?.id);
+                const myListings = response.data.filter((l: Listing) => l.hostId === user?.id);
                 setListings(myListings);
             }
             setLoading(false);

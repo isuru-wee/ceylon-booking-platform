@@ -95,8 +95,8 @@ export default function Home() {
                     placeholder="Filter by type"
                     clearable
                     data={[
-                        { value: 'slot', label: '🎯 Experiences & Tours' },
-                        { value: 'date', label: '🏨 Accommodations' },
+                        { value: 'slot', label: 'Experiences & Tours' },
+                        { value: 'date', label: 'Accommodations' },
                     ]}
                     value={typeFilter}
                     onChange={setTypeFilter}
